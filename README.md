@@ -1,6 +1,6 @@
 # 倒数近似实验
 
-保留原论文定点复现和仅替换量化规则的 FP16 三步法。
+包含原论文定点复现、仅替换量化规则的 FP16 三步法，以及 FP16 受限系数组合搜索。
 
 论文：*High-Speed Function Approximation Using a Minimax Quadratic Interpolator*，IEEE Transactions on Computers，2005，DOI：[10.1109/TC.2005.52](https://doi.org/10.1109/TC.2005.52)。
 
@@ -17,6 +17,7 @@ cd minimax
 |---|---|---|
 | [original/](original/) | 原论文方法的定点系数数值复现，含论文、测试和原始结果 | `reproduce.py` |
 | [fp16_three_pass/](fp16_three_pass/) | 保留原三步流程，仅替换为受限 FP16 量化，d=1～11 | `generate_coefficients.py`、`evaluate_accuracy.py` |
+| [fp16_constrained/](fp16_constrained/) | 合法 FP16 系数组合搜索，128分段，d=1～11 | `generate_coefficients.py`、`evaluate_accuracy.py` |
 
 ## 原始复现
 
@@ -45,3 +46,17 @@ cd ..
 三步法复用 `original/reproduce.py` 中的高精度 Remez 求解，因此请保留两个目录的相对位置。
 
 各套实验分别读写各自的 `results/`，重新运行会覆盖对应结果。
+
+## FP16 组合搜索
+
+从仓库根目录运行：
+
+```powershell
+cd fp16_constrained
+python -m pip install -r requirements.txt
+python -B generate_coefficients.py
+python -B evaluate_accuracy.py
+cd ..
+```
+
+结果：[fp16_constrained/results/REPORT.md](fp16_constrained/results/REPORT.md)。该方法使用剪枝和误差下界提前终止，不改变另外两套实验。
